@@ -1,6 +1,8 @@
 package miniobenchmarking
 
 import (
+	"crypto/aes"
+	"crypto/cipher"
 	"encoding/hex"
 	"fmt"
 	"github.com/klauspost/reedsolomon"
@@ -36,7 +38,7 @@ func benchmarkHighwayhash(b *testing.B, size int) {
 
 func BenchmarkHighwayhash(b *testing.B) {
 	b.Run("1M", func(b *testing.B) {
-		benchmarkHighwayhash(b, 1*1024*1024)
+		benchmarkHighwayhash(b, 1024*1024)
 	})
 	b.Run("5M", func(b *testing.B) {
 		benchmarkHighwayhash(b, 5*1024*1024)
@@ -120,4 +122,57 @@ func benchmarkReedSolomon(b *testing.B, dataShards, parityShards int) {
 func BenchmarkReedsolomon(b *testing.B) {
 	benchmarkReedSolomon(b, 8, 8)
 	benchmarkReedSolomon(b, 12, 4)
+}
+
+func benchmarkAESGCM(b *testing.B, size int) {
+
+	data := make([][]byte, runtime.GOMAXPROCS(0))
+
+	rng := rand.New(rand.NewSource(0xabadc0cac01a))
+	for i := range data {
+		data[i] = make([]byte, size)
+		rng.Read(data[i])
+	}
+
+	keys := make([][16]byte, len(data))
+	nonces := make([][12]byte, len(data))
+	ads := make([][13]byte, len(data))
+	aeses := make([]cipher.Block, len(data))
+	aesgcms := make([]cipher.AEAD, len(data))
+	outs := make([][]byte, len(data))
+
+	for i, k := range keys {
+		aeses[i], _ = aes.NewCipher(k[:])
+		aesgcms[i], _ = cipher.NewGCM(aeses[i])
+		outs[i] = []byte{}
+	}
+
+	b.SetBytes(int64(size))
+	b.ResetTimer()
+
+	counter := uint64(0)
+	b.RunParallel(func(pb *testing.PB) {
+		for pb.Next() {
+			index := int(atomic.AddUint64(&counter, 1)) % len(data)
+			outs[index] = aesgcms[index].Seal(outs[index][:0], nonces[index][:], data[index], ads[index][:])
+		}
+	})
+}
+
+func BenchmarkAESGCM(b *testing.B) {
+	b.Run("1M", func(b *testing.B) {
+		benchmarkAESGCM(b, 1024*1024)
+	})
+	b.Run("5M", func(b *testing.B) {
+		benchmarkAESGCM(b, 5*1024*1024)
+	})
+	b.Run("10M", func(b *testing.B) {
+		benchmarkAESGCM(b, 10*1024*1024)
+	})
+	b.Run("25M", func(b *testing.B) {
+		benchmarkAESGCM(b, 25*1024*1024)
+	})
+	b.Run("50M", func(b *testing.B) {
+		benchmarkAESGCM(b, 50*1024*1024)
+	})
 }
