@@ -18,16 +18,22 @@ Because of its optimized nature of its core algorithms, minio is a great target 
 
 ## Benchmarking methodology
 
-In order to compare how the Graviton2 CPUs stack up against Intel, we ran tests on two different types of EC2 instances, for Intel we used c5.18xlarge whereas for ARM/Graviton2 we used the m6g.16large. 
+In order to compare how the Graviton2 CPUs stack up against Intel, we ran tests on two different types of EC2 instances. For Intel we used c5.18xlarge instances whereas for ARM/Graviton2 we used the new m6g.16large type. 
 
-|          | Intel Skylake | ARM Graviton2  |
-| Cores    |            72 |            64  |
-| GHz      |               |                |
-| L1 cache |               |                |
-| L2 cache |               |                |
-| L3 cache |               |                |
+The Intel server is a dual socket/cpu server with 18 cores per cpu (36 with hyperthreading). The ARM server uses a single socket with 64 cores 9and no hyperthreading). More details can be found in the following table:
 
-Since the Intel CPU has 8 more (hyperthreaded) cores as compared to the ARM cpu, we limited the maximum number of threads to 64 to create an equal battle field.
+```
+| Architecture       |   x86_64 | aarch64 |
+| CPU(s)             |       72 |      64 |
+| Thread(s) per core |        2 |       1 |  
+| Core(s) per socket |       18 |      64 | 
+| Socket(s)          |        2 |       1 |
+| NUMA node(s)       |        2 |       1 | 
+| L1d cache          |      32K |     64K |
+| L1i cache          |      32K |     64K |
+| L2 cache           |    1024K |   1024K |
+| L3 cache           |   25344K |  32768K |
+```
 
 You can find the code in the [minio-benchmarking]() repository on github.
 
