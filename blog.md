@@ -77,16 +77,14 @@ Graviton2 on the other hand has complete linear performance scalability until ar
 
 Let us start by saying that, for all practical purposes, both cpu platforms provide plenty of computational power to saturate even the fastest networking speeds and NVMe drives. So in that sense both are perfectly capable of fulfilling the highest performance demands placed upon Minio's object storage server.
 
-Having said that, what is clear is that the ARM architecture, with the introduction of the Graviton2 processor by AWS, has closed the performance gap to Intel and even surpassed significantly it for multi-core performance.
+Having said that, what is clear is that the ARM architecture, with the introduction of the Graviton2 processor by AWS, has closed the performance gap to Intel and even surpassed it significantly for multi-core performance.
 
-Especially in heavily multi-threaded environments the Graviton2 cpu looks to be in great shape. With cloud workloads demanding server applications to deal with (many) multi-tenancy scenarios, this can be a real benefit.
+Especially in heavily multi-threaded environments the Graviton2 cpu looks to be in great shape. With cloud workloads demanding server applications to deal with (many) multi-tenancy scenarios, this can be a real benefit. Also with techniques such as Firecracker (for light-weight virtualization and serverless computing) becoming more prevalent, these latest ARM chips are a great addition.
 
-Also with techniques such as Firecracker (for light-weight virtualization and serverless computing) becoming more prevalent, the ARM chips are a great addition.
-
-Lastly, given ARM's background coming from mobile computing space, the power consumption of the Graviton2 is most likely relatively modest (although the exact details are not yet known). 
+Lastly, given ARM's background coming from the mobile computing space, the power consumption of the Graviton2 is most likely relatively modest (although the exact details are not yet known). 
 
 ## Things to watch out for 
 
-Amazon is not the only one eying this new ARM platform, some other developments to watch out for are: 
+Amazon is not the only one eyeing this new ARM platform, some other developments to watch out for are: 
 - Ampere Computing: the Ampere [Altra](https://amperecomputing.com/altra/) processor with 80 cores in combination with up to 128 lanes of PCIe Gen4 support promises to be a highly performant and scalable yet power efficient platform.
 - Startup companies such as [NUVIA](https://nuviainc.com/) that are set out to "deliver a new class of processors that deliver the performance and energy efficiency needed to power the next era of computing" (presumably on ARM given their backgrounds?)
