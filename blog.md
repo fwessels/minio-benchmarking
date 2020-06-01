@@ -63,19 +63,23 @@ Then when it comes to multi-core performance, ARM again beats Intel by more than
 
 ## Linear scalability
 
-Based on the data that we gathered, we were able to produce another interesting comparison chart. It shows the (aggregated) reed solomon erasure coding performance (8 data and 8 parity with 25 MB shards) as a function of the number of cores for both Skylake and Graviton2, ranging all the way from a single core through to 64 cores.
+Based on the data that we gathered, we were able to produce another interesting comparison chart. It shows the (aggregated) reed solomon erasure coding performance (8 data and 8 parity with 25 MB shards) as a function of the number of cores for Skylake (and Cascade lake; more on that below) versus Graviton2, ranging all the way from a single core through to 64 cores.
 
 This confirms in more detail the results that we observed above. Up to about 20 cores or so the Intel Skylake CPU beats the Graviton2, but thereafter the (aggregate) performane remains roughly flat (or even degrades somewhat).
 
 Graviton2 on the other hand has complete linear performance scalability until around 30+ cores after which the performance increase starts to taper off.
 
-(For this particular test scenario, we can even pinpoint the exact cross-over point between Intel and ARM at 23 cores, or at about 1/3 of the way towards 64 cores.)
+Since Skylake is not the latest generation of Intel CPUs, we decided to run this test also on a Cascade lake server. For this AWS offers the `c5.24xlarge` instance type which has dual Cascade lake CPUs offering a total of 96 vcpus and 36608K of L3 cache per CPU. To allow for better comparison we again did not go beyond 64 simultaneous cores.
+
+As can be seen Caslake lake is significantly faster in our testing as compared to Skylake although showing a more "jagged" graph. Its peak performance lies in the 20 to 30 core range (perhaps not surprising since it has 24 physical cores) and the decline for higher core counts is less in comparison to Skylake.
+
+If we compare Cascade lake to Graviton2 as well, then at low core numbers it is much faster but for higher core counts (if you were to do some sort of "moving average") it slots in between Skylake and Graviton2. So Cascade lake has clearly significantly more performance to offer than Skylake but it cannot meet Graviton2.
 
 ![linear-scalability](charts/linear-scalability.png)
 
 ## Conclusion 
 
-Let us start by saying that, for all practical purposes, both cpu platforms provide plenty of computational power to saturate even the fastest networking speeds and NVMe drives. So in that sense both are perfectly capable of fulfilling the highest performance demands placed upon Minio's object storage server.
+Let us start by saying that, for all practical purposes, both the Intel and ARM platforms provide plenty of computational power to saturate even the fastest networking speeds and NVMe drives. So in that sense both are perfectly capable of fulfilling the highest performance demands placed upon Minio's object storage server.
 
 Having said that, what is clear is that the ARM architecture, with the introduction of the Graviton2 processor by AWS, has closed the performance gap to Intel and even surpassed it significantly for multi-core performance.
 
