@@ -71,7 +71,7 @@ Graviton2 on the other hand has complete linear performance scalability until ar
 
 Since Skylake is not the latest generation of Intel CPUs, we decided to run this test also on a Cascade lake server. For this AWS offers the `c5.24xlarge` instance type which has dual Cascade lake CPUs offering a total of 96 vcpus and 36608K of L3 cache per CPU. To allow for better comparison we again did not go beyond 64 simultaneous cores.
 
-As can be seen Caslake lake is significantly faster in our testing as compared to Skylake although showing a more "jagged" graph. Its peak performance lies in the 20 to 30 core range (perhaps not surprising since it has 24 physical cores) and the decline for higher core counts is less in comparison to Skylake.
+As can be seen Cascade lake is significantly faster in our testing as compared to Skylake although showing a more "jagged" graph. Its peak performance lies in the 20 to 30 core range (perhaps not surprising since it has 24 physical cores) and the decline for higher core counts is less in comparison to Skylake.
 
 If we compare Cascade lake to Graviton2 as well, then at low core numbers it is much faster but for higher core counts (if you were to do some sort of "moving average") it slots in between Skylake and Graviton2. So Cascade lake has clearly significantly more performance to offer than Skylake but it cannot meet Graviton2.
 
