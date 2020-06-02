@@ -77,6 +77,18 @@ If we compare Cascade lake to Graviton2 as well, then at low core numbers it is 
 
 ![linear-scalability](charts/linear-scalability.png)
 
+## Single vs dual socket 
+
+The somewhat unsatisfactory results for the (dual) Intel CPUs as reported above prompted us to do one more test in order to see what the performance would look like on a single socket server.
+
+As it turns out the `c5.9xlarge` and `c5.12xlarge` instance types were exactly what we we looking for so we repeated the linear scalability test above on these instance types. Since we were now running on a single CPU, for Skylake there's a limit of 36 cores and 48 cores for Cascade lake. For easier comparison the graph for the Graviton2 is repeated for up to 64 cores (also single socket of course).
+
+![single-socket-performance](charts/single-socket-performance.png)
+
+The resulting graphs are pretty similar in shape but much "smoother" as compared to the dual socket graphs shown earlier. Again the Intel CPUs offer great performance at lower core counts and peak around the number of physical cores before tampering off slightly towards their maximum core count. 
+
+What this graph details is that the (largely) absence of additional performance for the dual socket servers indicates that the dual socket servers are presumably heavily "contended" on memory access which hurts performance in a major way. The fact that Minio's code base is highly optimized for performance will no doubt be largely attributable to this phenomenon.
+
 ## Conclusion 
 
 Let us start by saying that, for all practical purposes, both the Intel and ARM platforms provide plenty of computational power to saturate even the fastest networking speeds and NVMe drives. So in that sense both are perfectly capable of fulfilling the highest performance demands placed upon Minio's object storage server.
