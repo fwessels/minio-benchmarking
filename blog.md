@@ -1,4 +1,4 @@
-# Intel rules single-core performance but ARM dominates multi-core performance
+# Impact of Intel vs. ARM CPU Performance for Object Storage
 
 The recent announcement from AWS about the general availability of their new ARM-powered Graviton2 servers caused us to take another look at the performance of these ARM servers. In this blog post we describe the results which you may find surprising.
 
@@ -93,7 +93,7 @@ What this graph details is that the (largely) absence of additional performance 
 
 Let us start by saying that, for all practical purposes, both the Intel and ARM platforms provide plenty of computational power to saturate even the fastest networking speeds and NVMe drives. So in that sense both are perfectly capable of fulfilling the highest performance demands placed upon Minio's object storage server.
 
-Having said that, what is clear is that the ARM architecture, with the introduction of the Graviton2 processor by AWS, has closed the performance gap to Intel and even surpassed it significantly for multi-core performance.
+Having said that, what is clear is that the ARM architecture, with the introduction of the Graviton2 processor by AWS, has closed the performance gap to Intel and even surpassed it for multi-core performance.
 
 Especially in heavily multi-threaded environments the Graviton2 cpu looks to be in great shape. With cloud workloads demanding server applications to deal with (many) multi-tenancy scenarios, this can be a real benefit. Also with techniques such as Firecracker (for light-weight virtualization and serverless computing) becoming more prevalent, these latest ARM chips are a great addition.
 
