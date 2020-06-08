@@ -83,6 +83,8 @@ The somewhat unsatisfactory results for the (dual) Intel CPUs as reported above 
 
 As it turns out the `c5.9xlarge` and `c5.12xlarge` instance types were exactly what we we looking for so we repeated the linear scalability test above on these instance types. Since we were now running on a single CPU, for Skylake there's a limit of 36 cores and 48 cores for Cascade lake. For easier comparison the graph for the Graviton2 is repeated for up to 64 cores (also single socket of course).
 
+*UPDATE*: With the availability of AMD EPYC cpus on AWS in the form of `c5a` instance types, we repeated the single socket test on this CPU (48 physical cores; type 7R32) as well. The results are added to the chart below and as can be been it is scales up better as compared to both Intel CPUs. At the high end it seems to perform a little bit less as compared to the Graviton2.
+ 
 ![single-socket-performance](charts/single-socket-performance.png)
 
 The resulting graphs are pretty similar in shape but much "smoother" as compared to the dual socket graphs shown earlier. Again the Intel CPUs offer great performance at lower core counts and peak around the number of physical cores before tampering off slightly towards their maximum core count. 
