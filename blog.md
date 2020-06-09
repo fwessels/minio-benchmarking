@@ -91,6 +91,34 @@ The resulting graphs are pretty similar in shape but much "smoother" as compared
 
 What this graph details is that the (largely) absence of additional performance for the dual socket servers indicates that the dual socket servers are presumably heavily "contended" on memory access which hurts performance in a major way. The fact that Minio's code base is highly optimized for performance will no doubt be largely attributable to this phenomenon.
 
+## Cost and power consumption
+
+Regarding power consumption it is estimated that the Graviton2 (running at 2.5 GHz) consumes up to 1.8 W per core, giving a total of about 115W. The AMD EPYC is rumored to take about 280W and the Intel's CPUs should consume roughly 240W. The following table sums up the information for each of the four CPUs:
+
+```
+| Instance type      |  m6g.16xlarge |   c5.18xlarge |   c5.24xlarge |  c5a.24xlarge |
+| Architecture       |     Graviton2 |       Skylake |  Cascade lake |      AMD EPYC |
+| CPU(s)             |            64 |            72 |            96 |            96 |
+| RAM (GiB)          |           256 |           144 |           192 |           192 |
+| $/hour             |        $2.464 |         $3.06 |         $4.08 |        $3.696 |
+| Power usage (W)    |          ~115 |          ~240 |          ~240 |          ~280 |
+```
+
+Based on this, we can compute some interesting ratios. The table below shows both the ratios of power and price per either vcpu and (physical) core. The reason for showing both the ratio to vcpus and to cores is that, as we saw above, depending on the use case the "effectiveness" of hyperthreading can vary significantly. Therefore either the "per vpu" or "per core" may be more applicable to your specific use case.
+
+Note that, since Graviton2 does not use hyperthreading, there is obviously no difference between the vcpu and core. Additionally, the ARM-based instance type offers a bit more RAM at 256 GiB versus either 144 or 192 GiB.
+
+```
+| Architecture       |     Graviton2 |       Skylake |  Cascade lake |      AMD EPYC |
+| Power/vcpu         |           1.8 |           3.3 |           2.5 |           2.9 |
+| $/hour/vcpu        |       $0.0385 |       $0.0425 |       $0.0425 |       $0.0385 |
+|                    |               |               |               |               |
+| Power/core         |           1.8 |           6.6 |           5.0 |           5.8 |
+| $/hour/core        |       $0.0385 |       $0.0850 |       $0.0850 |       $0.0770 |
+```
+
+Perhaps unsurprisingly given ARM's background, in terms of power usage the Graviton2 is significantly more efficient compared against both the Intel CPUs and the AMD CPU. In terms of the cost comparison, the Graviton2 and AMD EPYC are priced identically on the "vcpu" basis with the Intel CPUs coming in a bit more expensive.
+
 ## Conclusion 
 
 Let us start by saying that, for all practical purposes, both the Intel and ARM platforms provide plenty of computational power to saturate even the fastest networking speeds and NVMe drives. So in that sense both are perfectly capable of fulfilling the highest performance demands placed upon Minio's object storage server.
