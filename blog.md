@@ -65,7 +65,7 @@ Then when it comes to multi-core performance, ARM again beats Intel by more than
 
 Based on the data that we gathered, we were able to produce another interesting comparison chart. It shows the (aggregated) reed solomon erasure coding performance (8 data and 8 parity with 25 MB shards) as a function of the number of cores for Skylake (and Cascade lake; more on that below) versus Graviton2, ranging all the way from a single core through to 64 cores.
 
-This confirms in more detail the results that we observed above. Up to about 20 cores or so the Intel Skylake CPU beats the Graviton2, but thereafter the (aggregate) performane remains roughly flat (or even degrades somewhat).
+This confirms in more detail the results that we observed above. Up to about 20 cores or so the Intel Skylake CPU beats the Graviton2, but thereafter the (aggregate) performance remains roughly flat (or even degrades somewhat).
 
 Graviton2 on the other hand has complete linear performance scalability until around 30+ cores after which the performance increase starts to taper off.
 
@@ -83,7 +83,7 @@ The somewhat unsatisfactory results for the (dual) Intel CPUs as reported above 
 
 As it turns out the `c5.9xlarge` and `c5.12xlarge` instance types were exactly what we we looking for so we repeated the linear scalability test above on these instance types. Since we were now running on a single CPU, for Skylake there's a limit of 36 cores and 48 cores for Cascade lake. For easier comparison the graph for the Graviton2 is repeated for up to 64 cores (also single socket of course).
 
-*UPDATE*: With the availability of AMD EPYC cpus on AWS in the form of `c5a` instance types, we repeated the single socket test on this CPU (48 physical cores; type 7R32) as well. The results are added to the chart below and as can be been it is scales up better as compared to both Intel CPUs. At the high end it seems to perform a little bit less as compared to the Graviton2.
+*UPDATE*: With the availability of AMD EPYC cpus on AWS in the form of `c5a` instance types, we repeated the single socket test on this CPU (48 physical cores; type 7R32) as well. The results are added to the chart below and as can be been it scales up better as compared to both Intel CPUs. At the high end it seems to perform a little bit less as compared to the Graviton2.
  
 ![single-socket-performance](charts/single-socket-performance.png)
 
