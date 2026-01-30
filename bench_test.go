@@ -59,16 +59,6 @@ func BenchmarkHighwayhash(b *testing.B) {
 
 func benchmarkRsParallel(b *testing.B, dataShards, parityShards, shardSize int) {
 
-	fillRandom := func(p []byte) {
-		for i := 0; i < len(p); i += 7 {
-			val := rand.Int63()
-			for j := 0; i+j < len(p) && j < 7; j++ {
-				p[i+j] = byte(val)
-				val >>= 8
-			}
-		}
-	}
-
 	r, err := reedsolomon.New(dataShards, parityShards)
 	if err != nil {
 		b.Fatal(err)
@@ -83,7 +73,7 @@ func benchmarkRsParallel(b *testing.B, dataShards, parityShards, shardSize int) 
 			shards[s] = make([]byte, shardSize)
 		}
 		for s := 0; s < dataShards; s++ {
-			fillRandom(shards[s])
+			rand.Read(shards[s])
 		}
 		shardsCh <- shards
 	}
