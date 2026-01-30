@@ -9,7 +9,6 @@ import (
 	"github.com/minio/highwayhash"
 	"math/rand"
 	"runtime"
-	"sync/atomic"
 	"testing"
 )
 
@@ -18,20 +17,21 @@ func benchmarkHighwayhash(b *testing.B, size int) {
 	key, _ := hex.DecodeString("000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f")
 
 	rng := rand.New(rand.NewSource(0xabadc0cac01a))
-	data := make([][]byte, runtime.GOMAXPROCS(0))
-	for i := range data {
-		data[i] = make([]byte, size)
-		rng.Read(data[i])
+	ch := make(chan []byte, runtime.GOMAXPROCS(0))
+	for i := 0; i < runtime.GOMAXPROCS(0); i++ {
+		data := make([]byte, size)
+		rng.Read(data)
+		ch <- data
 	}
 
 	b.SetBytes(int64(size))
 	b.ResetTimer()
 
-	counter := uint64(0)
 	b.RunParallel(func(pb *testing.PB) {
 		for pb.Next() {
-			index := atomic.AddUint64(&counter, 1)
-			highwayhash.Sum(data[int(index)%len(data)], key[:])
+			data := <-ch
+			highwayhash.Sum(data, key[:])
+			ch <- data
 		}
 	})
 }
@@ -127,9 +127,8 @@ func benchmarkAESGCM(b *testing.B, size int) {
 
 	rng := rand.New(rand.NewSource(0xabadc0cac01a))
 
-	data := make([][]byte, runtime.GOMAXPROCS(0))
-	ch := make(chan State, len(data))
-	for range data {
+	ch := make(chan State, runtime.GOMAXPROCS(0))
+	for i := 0; i < runtime.GOMAXPROCS(0); i++ {
 		state := State{}
 		state.data = make([]byte, size)
 		rng.Read(state.data)
