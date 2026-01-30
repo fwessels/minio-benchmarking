@@ -115,36 +115,37 @@ func BenchmarkReedsolomon(b *testing.B) {
 }
 
 func benchmarkAESGCM(b *testing.B, size int) {
-
-	data := make([][]byte, runtime.GOMAXPROCS(0))
-
-	rng := rand.New(rand.NewSource(0xabadc0cac01a))
-	for i := range data {
-		data[i] = make([]byte, size)
-		rng.Read(data[i])
+	type State struct {
+		data   []byte
+		key    [16]byte
+		nonce  [12]byte
+		ad     [13]byte
+		aes    cipher.Block
+		aesgcm cipher.AEAD
+		out    []byte
 	}
 
-	keys := make([][16]byte, len(data))
-	nonces := make([][12]byte, len(data))
-	ads := make([][13]byte, len(data))
-	aeses := make([]cipher.Block, len(data))
-	aesgcms := make([]cipher.AEAD, len(data))
-	outs := make([][]byte, len(data))
+	rng := rand.New(rand.NewSource(0xabadc0cac01a))
 
-	for i, k := range keys {
-		aeses[i], _ = aes.NewCipher(k[:])
-		aesgcms[i], _ = cipher.NewGCM(aeses[i])
-		outs[i] = []byte{}
+	data := make([][]byte, runtime.GOMAXPROCS(0))
+	ch := make(chan State, len(data))
+	for range data {
+		state := State{}
+		state.data = make([]byte, size)
+		rng.Read(state.data)
+		state.aes, _ = aes.NewCipher(state.key[:])
+		state.aesgcm, _ = cipher.NewGCM(state.aes)
+		ch <- state
 	}
 
 	b.SetBytes(int64(size))
 	b.ResetTimer()
 
-	counter := uint64(0)
 	b.RunParallel(func(pb *testing.PB) {
 		for pb.Next() {
-			index := int(atomic.AddUint64(&counter, 1)) % len(data)
-			outs[index] = aesgcms[index].Seal(outs[index][:0], nonces[index][:], data[index], ads[index][:])
+			state := <-ch
+			state.out = state.aesgcm.Seal(state.out[:0], state.nonce[:], state.data, state.ad[:])
+			ch <- state
 		}
 	})
 }
