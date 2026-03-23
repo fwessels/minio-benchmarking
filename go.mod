@@ -1,6 +1,6 @@
 module minio-benchmarking
 
-go 1.21
+go 1.25
 
 require (
 	github.com/klauspost/cpuid/v2 v2.2.6 // indirect
